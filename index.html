@@ -459,12 +459,29 @@ a{color:inherit;text-decoration:none}
   font-family:var(--font-display);font-size:1.6rem;
   margin:1.8em 0 .6em;color:var(--text);
 }
+.post-body h3{
+  font-family:var(--font-display);font-size:1.35rem;
+  margin:1.6em 0 .5em;color:var(--text);
+}
 .post-body blockquote{
   border-left:3px solid var(--accent);
   padding:8px 0 8px 20px;
   font-style:italic;color:var(--text2);
   margin:1.5em 0;
 }
+.post-body code{
+  background:rgba(61,107,79,.08);padding:.18em .35em;border-radius:6px;
+  font-family:var(--font-mono);font-size:.95em;color:var(--text);
+}
+.post-body mark{
+  background:var(--accent2);color:var(--text);padding:0 .2em;border-radius:4px;
+}
+.post-body ul,.post-body ol{
+  margin:1.2em 0 1.5em 1.4em;
+}
+.post-body li{margin:.35em 0;line-height:1.7;}
+.post-body hr{border:none;border-top:1px solid var(--border);margin:2em 0;}
+.post-body a{color:var(--accent);text-decoration:underline;}
 
 /* ─── Reading progress ─── */
 .reading-progress{
@@ -623,6 +640,22 @@ a{color:inherit;text-decoration:none}
   width:100%;
 }
 .form-textarea:focus{border-color:var(--accent)}
+.editor-help{
+  background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:14px;padding:16px;margin-top:14px;color:var(--text2);
+}
+.editor-help strong{display:block;margin-bottom:10px;color:var(--text);font-weight:700;}
+.editor-help .help-list{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:10px;list-style:none;padding:0;margin:0;}
+.editor-help .help-list li{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:.82rem;line-height:1.4;word-break:break-word;color:var(--text2);}
+@media(max-width:600px){.editor-help .help-list{grid-template-columns:1fr}}
+.editor-toolbar{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:10px;
+}
+.editor-btn{
+  border:none;background:transparent;color:var(--text2);font-size:.95rem;padding:8px 10px;border-radius:10px;cursor:pointer;transition:all var(--transition);font-weight:600;
+}
+.editor-btn:hover{background:var(--bg2);color:var(--accent);}
+.editor-btn:focus{outline:2px solid var(--accent);outline-offset:2px;}
 .form-select{
   border:1.5px solid var(--border);background:var(--bg2);
   border-radius:10px;padding:12px 16px;
@@ -1149,11 +1182,46 @@ a{color:inherit;text-decoration:none}
         </div>
         <div class="form-group editor-full">
           <label>Contenido *</label>
+          <div class="editor-toolbar" role="toolbar" aria-label="Barra de formato del editor">
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('h1')" title="Título 1">H1</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('h2')" title="Título 2">H2</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('h3')" title="Título 3">H3</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('bold')" title="Negrita">B</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('italic')" title="Cursiva">I</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('underline')" title="Subrayado">U</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('strikethrough')" title="Tachado">S</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('quote')" title="Cita">❝</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('ul')" title="Lista de viñetas">•</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('ol')" title="Lista numerada">1.</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('code')" title="Código">{ }</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('link')" title="Enlace">🔗</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('highlight')" title="Resaltado">≡</button>
+            <button type="button" class="editor-btn" onclick="applyEditorFormat('hr')" title="Línea horizontal">―</button>
+          </div>
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
             <button class="btn-secondary" onclick="document.getElementById('mediaFile').click();">➕ Insertar multimedia</button>
             <span style="font-size:.85rem;color:var(--text3);">Puedes insertar imágenes, audio, video u otros archivos. Al insertar se subirá y se añadirá una etiqueta en el contenido.</span>
           </div>
-          <textarea class="form-textarea" id="edBody" style="min-height:200px;" placeholder="Escribe aquí el artículo completo. Puedes usar líneas en blanco para separar párrafos.&#10;&#10;Para títulos de sección usa ##Título&#10;Para citas usa &gt;Cita"></textarea>
+          <textarea class="form-textarea" id="edBody" style="min-height:200px;" placeholder="Escribe aquí el artículo completo. Usa líneas en blanco para separar párrafos.&#10;&#10;## Título de sección&#10;### Subtítulo&#10;&gt; Cita&#10;- Lista de puntos&#10;1. Lista numerada&#10;**negrita**&#10;_cursiva_&#10;__subrayado__&#10;~~tachado~~&#10;`código`&#10;[texto](https://ejemplo.com)"></textarea>
+          <div class="editor-help">
+            <strong>Atajos de formato</strong>
+            <ul class="help-list">
+              <li><code># Título 1</code></li>
+              <li><code>## Título 2</code></li>
+              <li><code>### Título 3</code></li>
+              <li><code>&gt; Cita</code></li>
+              <li><code>- Elemento de lista</code></li>
+              <li><code>1. Elemento numerado</code></li>
+              <li><code>**negrita**</code></li>
+              <li><code>_cursiva_</code></li>
+              <li><code>__subrayado__</code></li>
+              <li><code>~~tachado~~</code></li>
+              <li><code>`código`</code></li>
+              <li><code>[texto](https://ejemplo.com)</code></li>
+              <li><code>==resaltado==</code></li>
+              <li><code>---</code></li>
+            </ul>
+          </div>
           <input type="file" id="mediaFile" class="hidden" onchange="handleMediaSelect(this)" accept="*/*">
         </div>
         <div class="form-group editor-full">
@@ -1234,7 +1302,7 @@ function renderAuthBtn() {
   if (currentUser) {
     el.innerHTML = `<button class="pub-badge" onclick="doLogout()">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-      Editora &nbsp;·&nbsp; Salir
+      Editor@ &nbsp;·&nbsp; Salir
     </button>`;
   } else {
     el.innerHTML = '';
@@ -1254,7 +1322,7 @@ async function doLogin() {
   try {
     await fb.signInWithEmailAndPassword(fb.auth, email, pass);
     closeModal('loginModal');
-    toast('¡Bienvenida de vuelta! 🌿', 'success');
+    toast('¡Bienvenid@ de vuelta! 🌿', 'success');
     document.getElementById('loginEmail').value = '';
     document.getElementById('loginPass').value = '';
     msg.textContent = '';
@@ -1445,11 +1513,15 @@ function renderSinglePost(p, scrollToComments) {
 }
 
 function formatBody(text) {
-  return text.split('\n').map(line => {
-    // media token: :::media|URL|MIME|FILENAME:::
-    if (line.startsWith(':::media|')) {
+  const blocks = text.split(/\n{2,}/g).map(block => block.trim()).filter(Boolean);
+  return blocks.map(block => {
+    const lines = block.split('\n').map(line => line.trim()).filter(Boolean);
+    if (!lines.length) return '';
+
+    const firstLine = lines[0];
+    if (firstLine.startsWith(':::media|')) {
       try {
-        const parts = line.replace(':::media|','').replace(':::','').split('|');
+        const parts = firstLine.replace(':::media|','').replace(':::','').split('|');
         const url = parts[0] || '';
         const mime = parts[1] || '';
         const name = parts[2] || '';
@@ -1459,11 +1531,86 @@ function formatBody(text) {
         return `<div><a href="${escHtml(url)}" target="_blank" rel="noopener">Descargar: ${escHtml(name)}</a></div>`;
       } catch(e) { return ''; }
     }
-    if (line.startsWith('##')) return `<h2>${escHtml(line.slice(2).trim())}</h2>`;
-    if (line.startsWith('>')) return `<blockquote>${escHtml(line.slice(1).trim())}</blockquote>`;
-    if (line.trim() === '') return '';
-    return `<p>${escHtml(line)}</p>`;
+
+    const cleanLines = lines.map(line => line.replace(/\s+$/,'')).filter(Boolean);
+    if (cleanLines.length === 1 && /^(-{3,}|\*{3,})$/.test(cleanLines[0])) return '<hr>';
+    if (cleanLines.every(line => /^[-*]\s+/.test(line))) {
+      return `<ul>${cleanLines.map(line => `<li>${formatInline(line.replace(/^[-*]\s+/, ''))}</li>`).join('')}</ul>`;
+    }
+    if (cleanLines.every(line => /^\d+[.)]\s+/.test(line))) {
+      return `<ol>${cleanLines.map(line => `<li>${formatInline(line.replace(/^\d+[.)]\s+/, ''))}</li>`).join('')}</ol>`;
+    }
+    if (firstLine.startsWith('>')) {
+      return `<blockquote>${formatInline(cleanLines.map(line => line.replace(/^>\s?/, '')).join(' '))}</blockquote>`;
+    }
+    if (firstLine.startsWith('###')) return `<h3>${formatInline(firstLine.slice(3).trim())}</h3>`;
+    if (firstLine.startsWith('##')) return `<h2>${formatInline(firstLine.slice(2).trim())}</h2>`;
+    if (firstLine.startsWith('#')) return `<h1>${formatInline(firstLine.slice(1).trim())}</h1>`;
+    return `<p>${formatInline(cleanLines.join(' '))}</p>`;
   }).join('');
+}
+
+function formatInline(text) {
+  return escHtml(text)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/==([^=]+)==/g, '<mark>$1</mark>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/__(.+?)__/g, '<span style="text-decoration:underline;">$1</span>')
+    .replace(/~~(.+?)~~/g, '<del>$1</del>')
+    .replace(/`([^`]+?)`/g, '<code>$1</code>')
+    .replace(/_(.+?)_/g, '<em>$1</em>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+}
+
+function applyEditorFormat(type) {
+  const ta = document.getElementById('edBody');
+  if (!ta) return;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const selected = ta.value.slice(start, end) || 'texto';
+
+  const wrap = (before, after = before) => {
+    ta.setRangeText(before + selected + after, start, end, 'end');
+    ta.focus();
+  };
+
+  const prefixLine = prefix => {
+    const value = ta.value;
+    const before = value.lastIndexOf('\n', start - 1) + 1;
+    const line = value.slice(before, end);
+    const replaced = line.split('\n').map(l => prefix + l).join('\n');
+    ta.setRangeText(replaced, before, end, 'end');
+    ta.focus();
+  };
+
+  switch (type) {
+    case 'h1': wrap('# ', ''); break;
+    case 'h2': wrap('## ', ''); break;
+    case 'h3': wrap('### ', ''); break;
+    case 'bold': wrap('**', '**'); break;
+    case 'italic': wrap('_', '_'); break;
+    case 'underline': wrap('__', '__'); break;
+    case 'strikethrough': wrap('~~', '~~'); break;
+    case 'quote': prefixLine('> '); break;
+    case 'ul': prefixLine('- '); break;
+    case 'ol': prefixLine('1. '); break;
+    case 'code': wrap('`', '`'); break;
+    case 'link': {
+      const url = prompt('URL del enlace:', 'https://');
+      if (!url) return;
+      ta.setRangeText(`[${selected}](${url})`, start, end, 'end');
+      ta.focus();
+      break;
+    }
+    case 'highlight': wrap('==', '=='); break;
+    case 'hr': {
+      const insert = '\n---\n\n';
+      ta.setRangeText(insert, start, end, 'end');
+      ta.focus();
+      break;
+    }
+    default: break;
+  }
 }
 
 // Handle inserting media from editor
@@ -1673,7 +1820,7 @@ function renderPublisherDash() {
   <div class="dashboard-banner">
     <div>
       <h3>Panel de edición ✏️</h3>
-      <p>Bienvenida, editora. Gestiona el contenido de Terra Nova.</p>
+      <p>Bienvenid@, editor@. Gestiona el contenido de Terra Nova.</p>
     </div>
     <div class="dash-actions">
       <button class="btn-primary" onclick="openEditor()">+ Nueva publicación</button>
@@ -1800,7 +1947,7 @@ function previewPost() {
   const title = document.getElementById('edTitle').value || 'Sin título';
   const body = document.getElementById('edBody').value || '';
   const win = window.open('','_blank','width=800,height=600');
-  win.document.write(`<html><head><title>Previsualización</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;line-height:1.7}h1{font-size:2rem}h2{font-size:1.4rem;margin:1.5em 0 .5em}blockquote{border-left:3px solid #3d6b4f;padding:8px 0 8px 16px;color:#666;font-style:italic}</style></head><body><h1>${escHtml(title)}</h1>${formatBody(body)}</body></html>`);
+  win.document.write(`<html><head><title>Previsualización</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;line-height:1.7}h1{font-size:2rem}h2{font-size:1.4rem;margin:1.5em 0 .5em}h3{font-size:1.2rem;margin:1.25em 0 .45em}blockquote{border-left:3px solid #3d6b4f;padding:8px 0 8px 16px;color:#666;font-style:italic}code{background:rgba(61,107,79,.08);padding:.18em .35em;border-radius:6px;font-family:monospace}mark{background:#ffe29f;color:#111;padding:0 .2em;border-radius:4px}ul,ol{margin:1.2em 0 1.5em 1.4em}li{margin:.35em 0}hr{border:none;border-top:1px solid #ddd;margin:1.5em 0}a{color:#3d6b4f;text-decoration:underline}</style></head><body><h1>${escHtml(title)}</h1>${formatBody(body)}</body></html>`);
 }
 
 // ─── Tags ─────────────────────────────────────────────────────────────────
