@@ -1,0 +1,1984 @@
+  <!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERRA NOVA — Moda Consciente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { getFirestore, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, increment, orderBy, query, where, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
+
+  // ── CONFIGURA TU FIREBASE AQUÍ ──────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyAc0vlabnPVM2YKSoXTUKDWcJLSd-dR1VY",
+    authDomain: "blog-ecologia-com-efec-sem2.firebaseapp.com",
+    projectId: "blog-ecologia-com-efec-sem2",
+    storageBucket: "blog-ecologia-com-efec-sem2.firebasestorage.app",
+    messagingSenderId: "192375874468",
+    appId: "1:192375874468:web:e3580f73ea3c137b755731",
+    measurementId: "G-EPSXQRK1PW"
+  };
+  // ────────────────────────────────────────────────────────────────────────────
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  window.__fb = { auth, db, storage, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+    collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, increment,
+    orderBy, query, where, serverTimestamp, onSnapshot, ref, uploadBytes, getDownloadURL, deleteObject };
+</script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede7d9;
+  --surface: #fff8f0;
+  --surface2: #f0e9d8;
+  --text: #1a1209;
+  --text2: #4a3f2e;
+  --text3: #7a6e5e;
+  --accent: #3d6b4f;
+  --accent2: #5a9e72;
+  --accent3: #c8885a;
+  --accent4: #b5430a;
+  --border: #d4c9b5;
+  --border2: #c0b49e;
+  --shadow: rgba(26,18,9,0.10);
+  --shadow2: rgba(26,18,9,0.18);
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 12px;
+  --radius2: 20px;
+  --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="dark"] {
+  --bg: #111009;
+  --bg2: #1a1810;
+  --surface: #201e14;
+  --surface2: #2a2718;
+  --text: #f0e9d8;
+  --text2: #c8bfaa;
+  --text3: #8a8070;
+  --accent: #5a9e72;
+  --accent2: #7bc494;
+  --accent3: #e09a6a;
+  --accent4: #d4601a;
+  --border: #3a3520;
+  --border2: #4a4530;
+  --shadow: rgba(0,0,0,0.35);
+  --shadow2: rgba(0,0,0,0.55);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  transition:background var(--transition),color var(--transition);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:var(--grain);
+  pointer-events:none;
+  z-index:9999;
+  opacity:0.6;
+}
+img{max-width:100%;display:block}
+/* Post media styling */
+.post-media{max-width:100%;display:block;border-radius:10px;cursor:pointer;margin:12px 0}
+.post-media video,.post-media audio{width:100%}
+button{cursor:pointer;font-family:var(--font-body)}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════════════════════ */
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .5s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER / NAV
+═══════════════════════════════════════════════════════════════ */
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:var(--bg);
+  border-bottom:1.5px solid var(--border);
+  transition:background var(--transition),border-color var(--transition);
+  backdrop-filter:blur(12px);
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;gap:20px;
+}
+.logo{
+  display:flex;align-items:baseline;gap:6px;
+  font-family:var(--font-display);font-weight:900;
+  font-size:1.5rem;letter-spacing:-0.5px;
+  color:var(--text);
+}
+.logo span{
+  font-size:.75rem;font-family:var(--font-mono);
+  color:var(--accent);letter-spacing:2px;
+  text-transform:uppercase;font-weight:500;
+}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  padding:6px 14px;border-radius:30px;
+  font-size:.875rem;font-weight:500;
+  color:var(--text2);
+  transition:background var(--transition),color var(--transition);
+}
+.nav-links a:hover,.nav-links a.active{
+  background:var(--surface2);color:var(--accent);
+}
+.nav-actions{display:flex;align-items:center;gap:8px}
+
+/* ─── Theme toggle ─── */
+.theme-btn{
+  width:40px;height:40px;border-radius:50%;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all var(--transition);
+}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ─── Search ─── */
+.search-btn{
+  width:40px;height:40px;border-radius:50%;
+  border:1.5px solid var(--border);
+  background:var(--surface);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all var(--transition);
+}
+.search-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ─── Mobile menu ─── */
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;
+  gap:5px;width:40px;height:40px;
+  border:1.5px solid var(--border);border-radius:10px;
+  background:var(--surface);padding:8px;
+}
+.hamburger span{display:block;height:1.5px;background:var(--text2);border-radius:2px;transition:all .3s}
+
+.mobile-nav{display:none}
+.mobile-nav.open{display:flex}
+
+/* ─── Publisher badge ─── */
+.pub-badge{
+  padding:6px 14px;border-radius:30px;font-size:.8rem;font-weight:600;
+  background:var(--accent);color:#fff;letter-spacing:.5px;
+  display:flex;align-items:center;gap:6px;
+  transition:background var(--transition);
+}
+.pub-badge:hover{background:var(--accent4)}
+.pub-badge svg{width:14px;height:14px}
+
+/* ─── Search overlay ─── */
+.search-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:80px;opacity:0;pointer-events:none;
+  transition:opacity var(--transition);
+}
+.search-overlay.open{opacity:1;pointer-events:all}
+.search-box{
+  width:100%;max-width:620px;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius2);padding:20px;
+  box-shadow:0 24px 64px var(--shadow2);
+}
+.search-input-wrap{display:flex;gap:10px;align-items:center}
+.search-input{
+  flex:1;border:none;background:var(--bg2);
+  border-radius:30px;padding:12px 20px;
+  font-size:1rem;font-family:var(--font-body);color:var(--text);
+  outline:none;
+}
+.search-results{margin-top:14px;display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+.search-result-item{
+  padding:12px;border-radius:10px;background:var(--bg2);
+  cursor:pointer;transition:background var(--transition);
+}
+.search-result-item:hover{background:var(--surface2)}
+.search-result-item h4{font-size:.9rem;font-family:var(--font-display)}
+.search-result-item p{font-size:.8rem;color:var(--text3);margin-top:3px}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════════════ */
+.hero{
+  padding:80px 0 60px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-60px;right:-80px;
+  width:420px;height:420px;
+  background:radial-gradient(circle,var(--accent2)22%,transparent 70%);
+  opacity:0.12;border-radius:50%;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-40px;left:-60px;
+  width:300px;height:300px;
+  background:radial-gradient(circle,var(--accent3)30%,transparent 70%);
+  opacity:0.10;border-radius:50%;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:30px;padding:6px 16px;
+  font-family:var(--font-mono);font-size:.75rem;
+  color:var(--accent);letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.hero-tag::before{content:'♻';font-size:.9rem}
+.hero h1{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(2.8rem,6vw,5.5rem);
+  line-height:1.05;letter-spacing:-1px;
+  color:var(--text);max-width:780px;
+}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p.sub{
+  margin-top:20px;font-size:1.1rem;color:var(--text2);
+  max-width:520px;line-height:1.7;
+}
+.hero-stats{
+  display:flex;gap:32px;margin-top:36px;flex-wrap:wrap;
+}
+.hero-stat{
+  display:flex;flex-direction:column;
+}
+.hero-stat strong{
+  font-family:var(--font-display);font-size:1.8rem;
+  font-weight:700;color:var(--accent);
+}
+.hero-stat span{font-size:.8rem;color:var(--text3);margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════════════
+   CATEGORY FILTER BAR
+═══════════════════════════════════════════════════════════════ */
+.filter-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:16px 0;overflow-x:auto;scrollbar-width:none;
+  border-bottom:1.5px solid var(--border);margin-bottom:40px;
+}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-pill{
+  flex-shrink:0;padding:8px 20px;border-radius:30px;
+  font-size:.82rem;font-weight:500;
+  border:1.5px solid var(--border);
+  background:transparent;color:var(--text2);
+  transition:all var(--transition);white-space:nowrap;
+}
+.filter-pill:hover,.filter-pill.active{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID
+═══════════════════════════════════════════════════════════════ */
+.posts-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:28px;
+}
+.post-card{
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius2);
+  overflow:hidden;
+  transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);
+  display:flex;flex-direction:column;
+  cursor:pointer;
+}
+.post-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 40px var(--shadow2);
+  border-color:var(--accent);
+}
+.card-image{
+  height:200px;overflow:hidden;background:var(--bg2);
+  position:relative;flex-shrink:0;
+}
+.card-image img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.post-card:hover .card-image img{transform:scale(1.05)}
+.card-image-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:3rem;opacity:.3;
+}
+.card-cat{
+  position:absolute;top:12px;left:12px;
+  background:var(--accent);color:#fff;
+  padding:4px 12px;border-radius:30px;
+  font-size:.72rem;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.card-body{padding:20px;flex:1;display:flex;flex-direction:column}
+.card-meta{
+  display:flex;align-items:center;gap:10px;
+  font-size:.75rem;color:var(--text3);margin-bottom:10px;
+  font-family:var(--font-mono);
+}
+.card-meta span{display:flex;align-items:center;gap:4px}
+.card-title{
+  font-family:var(--font-display);font-weight:700;
+  font-size:1.15rem;line-height:1.3;
+  color:var(--text);margin-bottom:8px;
+}
+.card-excerpt{
+  font-size:.875rem;color:var(--text2);line-height:1.6;
+  flex:1;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--border);
+}
+.card-actions{display:flex;gap:6px}
+.action-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:20px;
+  font-size:.78rem;font-weight:500;
+  border:1.5px solid var(--border);
+  background:transparent;color:var(--text2);
+  transition:all var(--transition);
+}
+.action-btn:hover,.action-btn.liked{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.action-btn.comment-btn:hover{
+  background:var(--accent3);border-color:var(--accent3);color:#fff;
+}
+.read-more{
+  font-size:.8rem;font-weight:600;color:var(--accent);
+  display:flex;align-items:center;gap:4px;
+}
+.read-more::after{content:'→';transition:transform var(--transition)}
+.post-card:hover .read-more::after{transform:translateX(4px)}
+
+/* ─── Featured post (1st card full width) ─── */
+.post-card.featured{
+  grid-column:1/-1;
+  flex-direction:row;
+}
+.post-card.featured .card-image{
+  width:45%;height:auto;min-height:260px;flex-shrink:0;
+}
+.post-card.featured .card-title{font-size:1.5rem}
+
+/* ─── Draft badge ─── */
+.draft-ribbon{
+  position:absolute;top:12px;right:12px;
+  background:var(--accent3);color:#fff;
+  padding:3px 10px;border-radius:20px;
+  font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════════════════════════ */
+.empty-state{
+  grid-column:1/-1;text-align:center;
+  padding:80px 20px;
+}
+.empty-state .icon{font-size:4rem;margin-bottom:16px;opacity:.4}
+.empty-state h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:8px}
+.empty-state p{color:var(--text3);max-width:360px;margin:0 auto}
+
+/* ═══════════════════════════════════════════════════════════════
+   SINGLE POST VIEW
+═══════════════════════════════════════════════════════════════ */
+.post-view{display:none;flex-direction:column;gap:0}
+.post-view.open{display:flex}
+
+.post-hero-img{
+  width:100%;height:420px;object-fit:cover;
+  border-radius:var(--radius2);margin-bottom:32px;
+}
+.post-hero-placeholder{
+  width:100%;height:280px;
+  background:var(--surface2);border-radius:var(--radius2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:5rem;opacity:.3;margin-bottom:32px;
+}
+.post-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.post-tag{
+  padding:4px 14px;border-radius:20px;
+  background:var(--surface2);border:1px solid var(--border);
+  font-size:.75rem;font-weight:500;color:var(--accent);
+  font-family:var(--font-mono);
+}
+.post-title{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(2rem,4vw,3.2rem);
+  line-height:1.1;letter-spacing:-0.5px;
+  margin-bottom:16px;
+}
+.post-meta-row{
+  display:flex;align-items:center;gap:20px;
+  padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  margin-bottom:32px;font-size:.82rem;color:var(--text3);
+  font-family:var(--font-mono);flex-wrap:wrap;gap:12px;
+}
+.post-meta-row span{display:flex;align-items:center;gap:5px}
+.post-body{
+  font-size:1.075rem;line-height:1.85;color:var(--text);
+  max-width:720px;margin:0 auto;
+}
+.post-body p{margin-bottom:1.5em}
+.post-body h2{
+  font-family:var(--font-display);font-size:1.6rem;
+  margin:1.8em 0 .6em;color:var(--text);
+}
+.post-body blockquote{
+  border-left:3px solid var(--accent);
+  padding:8px 0 8px 20px;
+  font-style:italic;color:var(--text2);
+  margin:1.5em 0;
+}
+
+/* ─── Reading progress ─── */
+.reading-progress{
+  position:fixed;top:0;left:0;height:3px;
+  background:var(--accent);width:0%;
+  z-index:300;transition:width .1s linear;
+}
+
+/* ─── Post actions bar ─── */
+.post-actions-bar{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:24px;margin:32px 0;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius2);
+}
+.post-action-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 22px;border-radius:30px;
+  font-size:.875rem;font-weight:600;
+  border:1.5px solid var(--border);
+  background:transparent;color:var(--text2);
+  transition:all var(--transition);
+}
+.post-action-btn:hover,.post-action-btn.active{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.post-action-btn.share-btn:hover{background:var(--accent3);border-color:var(--accent3)}
+
+/* ─── Comments ─── */
+.comments-section{margin-top:48px;padding-top:32px;border-top:2px solid var(--border)}
+.comments-section h3{
+  font-family:var(--font-display);font-size:1.5rem;margin-bottom:24px;
+}
+.comment-form{
+  display:flex;flex-direction:column;gap:12px;
+  background:var(--surface);padding:20px;
+  border-radius:var(--radius);border:1.5px solid var(--border);
+  margin-bottom:28px;
+}
+.comment-form input,.comment-form textarea{
+  border:1.5px solid var(--border);
+  background:var(--bg2);
+  border-radius:10px;padding:12px 16px;
+  font-family:var(--font-body);font-size:.9rem;color:var(--text);
+  outline:none;transition:border-color var(--transition);
+}
+.comment-form input:focus,.comment-form textarea:focus{border-color:var(--accent)}
+.comment-form textarea{resize:vertical;min-height:90px}
+.comment{
+  display:flex;gap:14px;padding:16px 0;
+  border-bottom:1px solid var(--border);
+}
+.comment-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--accent);display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:.9rem;flex-shrink:0;
+}
+.comment-author{font-weight:600;font-size:.9rem;margin-bottom:4px}
+.comment-date{font-size:.75rem;color:var(--text3);font-family:var(--font-mono)}
+.comment-text{font-size:.875rem;line-height:1.6;margin-top:6px;color:var(--text2)}
+.comment-like{
+  display:flex;align-items:center;gap:4px;
+  font-size:.75rem;color:var(--text3);background:none;border:none;
+  cursor:pointer;margin-top:6px;
+  transition:color var(--transition);
+}
+.comment-like:hover{color:var(--accent)}
+
+/* ─── Related posts ─── */
+.related-posts{margin-top:48px;padding-top:32px;border-top:2px solid var(--border)}
+.related-posts h3{font-family:var(--font-display);font-size:1.4rem;margin-bottom:20px}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.related-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:16px;cursor:pointer;
+  transition:all var(--transition);
+}
+.related-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.related-card h4{font-family:var(--font-display);font-size:.95rem;margin-bottom:6px}
+.related-card p{font-size:.78rem;color:var(--text3)}
+
+/* ─── Share panel ─── */
+.share-panel{
+  display:none;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius2);padding:20px;margin-top:12px;
+  text-align:center;
+}
+.share-panel.open{display:block}
+.share-panel p{font-size:.85rem;color:var(--text2);margin-bottom:14px}
+.share-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.share-btn-item{
+  padding:8px 18px;border-radius:30px;font-size:.8rem;font-weight:600;
+  border:1.5px solid var(--border);background:transparent;color:var(--text2);
+  cursor:pointer;transition:all var(--transition);
+}
+.share-btn-item:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;pointer-events:none;
+  transition:opacity var(--transition);
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  width:100%;max-width:720px;max-height:90vh;overflow-y:auto;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius2);
+  box-shadow:0 32px 80px var(--shadow2);
+  animation:modalIn .3s ease;
+}
+@keyframes modalIn{from{transform:scale(.95)translateY(20px)}to{transform:none}}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 28px 20px;
+  border-bottom:1.5px solid var(--border);
+}
+.modal-header h2{font-family:var(--font-display);font-size:1.4rem}
+.modal-close{
+  width:36px;height:36px;border-radius:50%;
+  border:1.5px solid var(--border);background:transparent;
+  color:var(--text2);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition);
+}
+.modal-close:hover{background:var(--accent4);border-color:var(--accent4);color:#fff}
+.modal-body{padding:24px 28px}
+
+/* ─── Login modal (subtle) ─── */
+.login-form{display:flex;flex-direction:column;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:.82rem;font-weight:500;color:var(--text2)}
+.form-input{
+  border:1.5px solid var(--border);background:var(--bg2);
+  border-radius:10px;padding:12px 16px;
+  font-family:var(--font-body);font-size:.95rem;color:var(--text);
+  outline:none;transition:border-color var(--transition);
+}
+.form-input:focus{border-color:var(--accent)}
+.login-msg{font-size:.8rem;color:var(--accent4);margin-top:4px;min-height:16px}
+
+/* ─── Post editor ─── */
+.editor-grid{display:flex;flex-direction:column;gap:16px}
+.editor-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.editor-full{grid-column:1/-1}
+.form-textarea{
+  border:1.5px solid var(--border);background:var(--bg2);
+  border-radius:10px;padding:12px 16px;
+  font-family:var(--font-body);font-size:.9rem;color:var(--text);
+  outline:none;resize:vertical;min-height:120px;
+  transition:border-color var(--transition);
+  width:100%;
+}
+.form-textarea:focus{border-color:var(--accent)}
+.form-select{
+  border:1.5px solid var(--border);background:var(--bg2);
+  border-radius:10px;padding:12px 16px;
+  font-family:var(--font-body);font-size:.9rem;color:var(--text);
+  outline:none;width:100%;
+}
+.image-upload-zone{
+  border:2px dashed var(--border);border-radius:var(--radius);
+  padding:28px;text-align:center;cursor:pointer;
+  transition:all var(--transition);background:var(--bg2);
+}
+.image-upload-zone:hover,.image-upload-zone.dragover{
+  border-color:var(--accent);background:var(--surface2);
+}
+.image-upload-zone p{font-size:.85rem;color:var(--text3);margin-top:6px}
+.image-preview{
+  width:100%;max-height:200px;object-fit:cover;
+  border-radius:10px;margin-top:10px;
+}
+.editor-actions{
+  display:flex;gap:10px;justify-content:flex-end;
+  padding-top:16px;border-top:1px solid var(--border);margin-top:8px;
+}
+
+/* ─── Tags input ─── */
+.tags-wrap{
+  display:flex;flex-wrap:wrap;gap:6px;
+  border:1.5px solid var(--border);background:var(--bg2);
+  border-radius:10px;padding:8px 12px;min-height:44px;align-items:center;
+}
+.tag-chip{
+  background:var(--accent);color:#fff;
+  padding:3px 10px;border-radius:20px;font-size:.78rem;
+  display:flex;align-items:center;gap:4px;
+}
+.tag-chip button{background:none;border:none;color:#fff;font-size:.9rem;line-height:1;cursor:pointer}
+.tags-input-field{
+  border:none;background:transparent;outline:none;
+  font-family:var(--font-body);font-size:.88rem;color:var(--text);
+  min-width:120px;flex:1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PUBLISHER DASHBOARD
+═══════════════════════════════════════════════════════════════ */
+.dashboard-banner{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius2);padding:20px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:32px;flex-wrap:wrap;gap:14px;
+}
+.dashboard-banner h3{
+  font-family:var(--font-display);font-size:1.1rem;
+}
+.dashboard-banner p{font-size:.85rem;color:var(--text2);margin-top:2px}
+.dash-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-primary{
+  padding:10px 22px;border-radius:30px;font-size:.875rem;font-weight:600;
+  background:var(--accent);color:#fff;border:none;
+  transition:background var(--transition);
+  display:flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{
+  padding:10px 22px;border-radius:30px;font-size:.875rem;font-weight:600;
+  background:transparent;border:1.5px solid var(--border);color:var(--text2);
+  transition:all var(--transition);
+  display:flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{
+  padding:8px 16px;border-radius:20px;font-size:.8rem;font-weight:600;
+  background:transparent;border:1.5px solid var(--border);color:var(--text3);
+  transition:all var(--transition);
+}
+.btn-danger:hover{background:#fee;border-color:#f88;color:#c22}
+.btn-edit{
+  padding:8px 16px;border-radius:20px;font-size:.8rem;font-weight:600;
+  background:transparent;border:1.5px solid var(--border);color:var(--text3);
+  transition:all var(--transition);
+}
+.btn-edit:hover{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+.btn-publish{
+  padding:8px 16px;border-radius:20px;font-size:.8rem;font-weight:600;
+  background:var(--accent);border:none;color:#fff;
+  transition:background var(--transition);
+}
+.btn-publish:hover{background:var(--accent2)}
+
+/* ─── Stats cards ─── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:18px;text-align:center;
+}
+.stat-card strong{
+  display:block;font-family:var(--font-display);font-size:2rem;
+  font-weight:700;color:var(--accent);
+}
+.stat-card span{font-size:.8rem;color:var(--text3)}
+
+/* ─── Admin post list ─── */
+.admin-posts-table{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius2);overflow:hidden;
+}
+.admin-post-row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  transition:background var(--transition);
+}
+.admin-post-row:last-child{border-bottom:none}
+.admin-post-row:hover{background:var(--bg2)}
+.admin-post-info{flex:1;min-width:0}
+.admin-post-info h4{
+  font-family:var(--font-display);font-size:.95rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.admin-post-info p{font-size:.78rem;color:var(--text3);font-family:var(--font-mono);margin-top:2px}
+.admin-post-actions{display:flex;gap:6px;flex-shrink:0}
+.status-pill{
+  padding:3px 10px;border-radius:20px;font-size:.7rem;
+  font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+}
+.status-pill.published{background:rgba(61,107,79,.18);color:var(--accent)}
+.status-pill.draft{background:rgba(200,136,90,.18);color:var(--accent3)}
+
+/* ═══════════════════════════════════════════════════════════════
+   NEWSLETTER SECTION
+═══════════════════════════════════════════════════════════════ */
+.newsletter-section{
+  margin:64px 0;padding:48px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  border-radius:var(--radius2);color:#fff;text-align:center;
+  position:relative;overflow:hidden;
+}
+.newsletter-section::before{
+  content:'♻️';font-size:6rem;
+  position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  opacity:.12;
+}
+.newsletter-section h3{
+  font-family:var(--font-display);font-size:1.8rem;font-weight:700;
+  margin-bottom:8px;
+}
+.newsletter-section p{opacity:.88;margin-bottom:24px;font-size:.95rem}
+.newsletter-form{display:flex;gap:10px;justify-content:center;max-width:440px;margin:0 auto;flex-wrap:wrap}
+.newsletter-input{
+  flex:1;min-width:200px;
+  border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.18);
+  border-radius:30px;padding:12px 20px;
+  font-family:var(--font-body);font-size:.9rem;color:#fff;outline:none;
+}
+.newsletter-input::placeholder{color:rgba(255,255,255,.7)}
+.newsletter-input:focus{border-color:rgba(255,255,255,.8)}
+.newsletter-btn{
+  padding:12px 24px;border-radius:30px;font-weight:600;
+  background:#fff;color:var(--accent);border:none;
+  font-family:var(--font-body);font-size:.875rem;
+  transition:all var(--transition);
+}
+.newsletter-btn:hover{background:var(--bg);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST NOTIFICATIONS
+═══════════════════════════════════════════════════════════════ */
+.toast-wrap{position:fixed;bottom:28px;right:28px;z-index:500;display:flex;flex-direction:column;gap:8px}
+.toast{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:12px;padding:12px 18px;
+  font-size:.85rem;font-weight:500;
+  box-shadow:0 8px 24px var(--shadow2);
+  display:flex;align-items:center;gap:10px;
+  animation:slideUp .3s ease,fadeOutToast 3.2s ease 2.8s forwards;
+  max-width:300px;
+}
+.toast.success{border-color:var(--accent);color:var(--accent)}
+.toast.error{border-color:var(--accent4);color:var(--accent4)}
+.toast.info{border-color:var(--accent3);color:var(--accent3)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fadeOutToast{to{opacity:0;transform:translateX(20px)}}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════════ */
+.site-footer{
+  margin-top:80px;padding:48px 0 32px;
+  border-top:1.5px solid var(--border);
+}
+.footer-inner{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:36px}
+.footer-brand p{font-size:.875rem;color:var(--text2);line-height:1.7;margin-top:12px;max-width:280px}
+.footer-col h4{font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col ul li a{font-size:.875rem;color:var(--text2);transition:color var(--transition)}
+.footer-col ul li a:hover{color:var(--accent)}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:24px;border-top:1px solid var(--border);
+  font-size:.78rem;color:var(--text3);flex-wrap:wrap;gap:8px;
+}
+/* Subtle admin link in footer */
+.admin-footlink{
+  background:none;border:none;font-size:.72rem;color:var(--text3);
+  opacity:.35;cursor:pointer;transition:opacity var(--transition);
+  font-family:var(--font-mono);
+}
+.admin-footlink:hover{opacity:1;color:var(--accent)}
+
+/* ═══════════════════════════════════════════════════════════════
+   BACK BUTTON
+═══════════════════════════════════════════════════════════════ */
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:30px;
+  border:1.5px solid var(--border);background:transparent;color:var(--text2);
+  font-size:.85rem;font-weight:500;margin-bottom:28px;
+  transition:all var(--transition);
+}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING SPINNER
+═══════════════════════════════════════════════════════════════ */
+.spinner{
+  width:40px;height:40px;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;margin:60px auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .mobile-nav{
+    display:none;flex-direction:column;gap:4px;
+    position:absolute;top:65px;left:0;right:0;
+    background:var(--bg);border-bottom:1.5px solid var(--border);
+    padding:12px 24px;z-index:99;
+  }
+  .mobile-nav.open{display:flex}
+  .mobile-nav a{
+    padding:12px 0;border-bottom:1px solid var(--border);
+    font-size:.95rem;color:var(--text2);
+  }
+  .post-card.featured{flex-direction:column}
+  .post-card.featured .card-image{width:100%;height:200px}
+  .footer-inner{grid-template-columns:1fr}
+  .editor-row{grid-template-columns:1fr}
+  .dashboard-banner{flex-direction:column;align-items:flex-start}
+  .post-actions-bar{flex-wrap:wrap}
+  .hero h1{font-size:2.4rem}
+  .hero-stats{gap:20px}
+}
+@media(max-width:480px){
+  .modal{border-radius:var(--radius) var(--radius) 0 0;max-height:95vh}
+  .modal-overlay{align-items:flex-end;padding:0}
+  .posts-grid{grid-template-columns:1fr}
+  .newsletter-section{padding:32px 24px}
+}
+
+/* ─── Section heading ─── */
+.section-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;flex-wrap:wrap;gap:10px;
+}
+.section-heading h2{
+  font-family:var(--font-display);font-weight:700;font-size:1.6rem;
+}
+.section-heading a,.view-all-btn{
+  font-size:.82rem;font-weight:600;color:var(--accent);
+  background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+}
+.section-heading a:hover,.view-all-btn:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<!-- Reading progress bar -->
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="container">
+    <nav class="nav-inner">
+      <a href="#" class="logo" onclick="showHome()">
+        TERRA NOVA <span>● ECO BLOG</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" onclick="showHome();filterBy('all')" class="active" id="navHome">Inicio</a>
+        <a href="#" onclick="filterBy('mezclilla')">Mezclilla</a>
+        <a href="#" onclick="filterBy('ecologia')">Ecología</a>
+        <a href="#" onclick="filterBy('diy')">DIY</a>
+        <a href="#" onclick="filterBy('comunidad')">Comunidad</a>
+      </div>
+      <div class="nav-actions">
+        <button class="search-btn" onclick="toggleSearch()" title="Buscar">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Cambiar tema">🌿</button>
+        <div id="authBtn"></div>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#" onclick="showHome();filterBy('all');closeMobileNav()">Inicio</a>
+    <a href="#" onclick="filterBy('mezclilla');closeMobileNav()">Mezclilla</a>
+    <a href="#" onclick="filterBy('ecologia');closeMobileNav()">Ecología</a>
+    <a href="#" onclick="filterBy('diy');closeMobileNav()">DIY</a>
+    <a href="#" onclick="filterBy('comunidad');closeMobileNav()">Comunidad</a>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT AREA
+══════════════════════════════════════════════════════════ -->
+<main>
+  <!-- ── HOME VIEW ── -->
+  <div id="homeView">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-tag">Moda circular · Diseño consciente</div>
+        <h1>Ropa que <em>vive</em><br>más de una vida</h1>
+        <p class="sub">Un espacio sobre ecología, moda sostenible y el arte de transformar mezclilla reutilizada en bolsas únicas que cuentan una historia.</p>
+        <div class="hero-stats" id="heroStats">
+          <div class="hero-stat"><strong id="statPosts">—</strong><span>Publicaciones</span></div>
+          <div class="hero-stat"><strong id="statLikes">—</strong><span>Reacciones ♻️</span></div>
+          <div class="hero-stat"><strong id="statComments">—</strong><span>Comentarios</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- Publisher dashboard -->
+      <div id="publisherDash" class="hidden"></div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-pill active" onclick="filterBy('all',this)">Todos</button>
+        <button class="filter-pill" onclick="filterBy('mezclilla',this)">🧵 Mezclilla</button>
+        <button class="filter-pill" onclick="filterBy('ecologia',this)">🌿 Ecología</button>
+        <button class="filter-pill" onclick="filterBy('diy',this)">🛠 DIY</button>
+        <button class="filter-pill" onclick="filterBy('comunidad',this)">🤝 Comunidad</button>
+        <button class="filter-pill" onclick="filterBy('tendencias',this)">✨ Tendencias</button>
+      </div>
+
+      <!-- Sort & search result notice -->
+      <div class="section-heading">
+        <h2 id="sectionTitle">Publicaciones recientes</h2>
+        <div style="display:flex;gap:10px;align-items:center">
+          <select id="sortSelect" class="form-select" style="width:auto;padding:6px 14px;font-size:.8rem;" onchange="sortPosts()">
+            <option value="newest">Más recientes</option>
+            <option value="oldest">Más antiguos</option>
+            <option value="mostLiked">Más ♻️</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Posts grid -->
+      <div class="posts-grid" id="postsGrid">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="newsletter-section">
+        <h3>Únete a la comunidad</h3>
+        <p>Recibe historias sobre moda consciente, tutoriales y novedades del proyecto directamente en tu correo.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="tu@correo.com" class="newsletter-input" id="nlEmail">
+          <button class="newsletter-btn" onclick="subscribeNewsletter()">Suscribirme →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SINGLE POST VIEW ── -->
+  <div id="postView" style="display:none;">
+    <div class="container" style="max-width:860px;">
+      <button class="back-btn" onclick="showHome()">← Volver al blog</button>
+      <div id="postContent"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo" style="font-size:1.2rem;">TERRA NOVA <span style="font-size:.65rem;">● ECO BLOG</span></div>
+        <p>Un proyecto nacido de la convicción de que la moda puede ser hermosa y responsable. Transformamos mezclilla reutilizada en objetos con propósito.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explora</h4>
+        <ul>
+          <li><a href="#" onclick="filterBy('mezclilla')">Bolsas de mezclilla</a></li>
+          <li><a href="#" onclick="filterBy('diy')">Tutoriales DIY</a></li>
+          <li><a href="#" onclick="filterBy('ecologia')">Artículos de ecología</a></li>
+          <li><a href="#" onclick="filterBy('comunidad')">Comunidad</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Proyecto</h4>
+        <ul>
+          <li><a href="#">Sobre nosotros</a></li>
+          <li><a href="#">Impacto ambiental</a></li>
+          <li><a href="#">Colabora</a></li>
+          <li><a href="#">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Terra Nova. Hecho con ♻️ y mucho amor.</span>
+      <button class="admin-footlink" onclick="openLogin()" title="Acceso editorial">admin</button>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════
+     SEARCH OVERLAY
+══════════════════════════════════════════════════════════ -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearchIfOutside(event)">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <svg width="18" height="18" fill="none" stroke="var(--text3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" placeholder="Buscar artículos, temas, etiquetas…" oninput="handleSearch()">
+      <button class="btn-secondary" style="padding:6px 14px;font-size:.8rem;" onclick="toggleSearch()">Cerrar</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     LOGIN MODAL
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h2>Acceso editorial</h2>
+      <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.85rem;color:var(--text3);margin-bottom:18px;line-height:1.6;">Área exclusiva para el equipo de Terra Nova. Ingresa con tus credenciales de acceso.</p>
+      <div class="login-form">
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" class="form-input" id="loginEmail" placeholder="editor@terranova.mx">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" class="form-input" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <div class="login-msg" id="loginMsg"></div>
+        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="doLogin()" id="loginBtn">
+          Iniciar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     POST EDITOR MODAL
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="editorModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="editorTitle">Nueva publicación</h2>
+      <button class="modal-close" onclick="closeModal('editorModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="editor-grid">
+        <div class="form-group editor-full">
+          <label>Título *</label>
+          <input type="text" class="form-input" id="edTitle" placeholder="Un título que inspire…">
+        </div>
+        <div class="editor-row">
+          <div class="form-group">
+            <label>Categoría *</label>
+            <select class="form-select" id="edCat">
+              <option value="">Selecciona…</option>
+              <option value="mezclilla">🧵 Mezclilla</option>
+              <option value="ecologia">🌿 Ecología</option>
+              <option value="diy">🛠 DIY</option>
+              <option value="comunidad">🤝 Comunidad</option>
+              <option value="tendencias">✨ Tendencias</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select class="form-select" id="edStatus">
+              <option value="published">Publicado</option>
+              <option value="draft">Borrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group editor-full">
+          <label>Extracto (resumen breve) *</label>
+          <input type="text" class="form-input" id="edExcerpt" placeholder="Una línea que enganche al lector…">
+        </div>
+        <div class="form-group editor-full">
+          <label>Contenido *</label>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <button class="btn-secondary" onclick="document.getElementById('mediaFile').click();">➕ Insertar multimedia</button>
+            <span style="font-size:.85rem;color:var(--text3);">Puedes insertar imágenes, audio, video u otros archivos. Al insertar se subirá y se añadirá una etiqueta en el contenido.</span>
+          </div>
+          <textarea class="form-textarea" id="edBody" style="min-height:200px;" placeholder="Escribe aquí el artículo completo. Puedes usar líneas en blanco para separar párrafos.&#10;&#10;Para títulos de sección usa ##Título&#10;Para citas usa &gt;Cita"></textarea>
+          <input type="file" id="mediaFile" class="hidden" onchange="handleMediaSelect(this)" accept="*/*">
+        </div>
+        <div class="form-group editor-full">
+          <label>Etiquetas (Enter para agregar)</label>
+          <div class="tags-wrap" id="tagsWrap">
+            <input class="tags-input-field" id="tagInput" placeholder="mezclilla, sostenible…" onkeydown="handleTagInput(event)">
+          </div>
+        </div>
+        <div class="form-group editor-full">
+          <label>Imagen destacada</label>
+          <div class="image-upload-zone" id="dropZone" onclick="document.getElementById('imgFile').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+            <div style="font-size:2rem;">📷</div>
+            <p>Arrastra una imagen aquí o <strong>haz clic para seleccionar</strong></p>
+            <p>JPG, PNG, WebP · Max 5 MB</p>
+            <p style="font-size:.78rem;color:var(--text3);margin-top:6px;">Aviso: la imagen destacada se recortará a la altura de la tarjeta (200px) para mantener la cuadrícula; la imagen puede ser recortada si excede el área.</p>
+          </div>
+          <input type="file" id="imgFile" accept="image/*" class="hidden" onchange="handleImageSelect(this)">
+          <img id="imgPreview" class="image-preview hidden">
+          <p style="font-size:.75rem;color:var(--text3);margin-top:6px;" id="imgFileName"></p>
+        </div>
+        <div class="editor-actions">
+          <button class="btn-secondary" onclick="previewPost()">👁 Previsualizar</button>
+          <button class="btn-secondary" onclick="closeModal('editorModal')">Cancelar</button>
+          <button class="btn-primary" onclick="savePost()" id="savePostBtn">
+            <span id="saveBtnText">Publicar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     TOAST CONTAINER
+══════════════════════════════════════════════════════════ -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- MEDIA VIEWER MODAL -->
+<div class="modal-overlay" id="mediaModal">
+  <div class="modal" style="max-width:90vw;max-height:90vh;padding:0;">
+    <div class="modal-header">
+      <h2 id="mediaModalTitle">Vista multimedia</h2>
+      <button class="modal-close" onclick="closeModal('mediaModal')">✕</button>
+    </div>
+    <div class="modal-body" id="mediaModalBody" style="display:flex;align-items:center;justify-content:center;padding:18px;">
+      <!-- media content injected here -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+// ─── State ─────────────────────────────────────────────────────────────────
+let currentUser = null;
+let allPosts = [];
+let currentFilter = 'all';
+let currentSort = 'newest';
+let editingPostId = null;
+let currentTags = [];
+let selectedImageFile = null;
+let currentPostId = null;
+let likedPosts = JSON.parse(localStorage.getItem('tn_likes') || '[]');
+let likedComments = JSON.parse(localStorage.getItem('tn_clikes') || '[]');
+let fb = null;
+
+// ─── Init ────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Wait for Firebase module to load
+  const waitFb = setInterval(() => {
+    if (window.__fb) {
+      clearInterval(waitFb);
+      fb = window.__fb;
+      fb.onAuthStateChanged(fb.auth, user => {
+        currentUser = user;
+        renderAuthBtn();
+        renderPublisherDash();
+        loadPosts();
+      });
+    }
+  }, 100);
+
+  // Reading progress
+  window.addEventListener('scroll', updateReadingProgress);
+});
+
+// ─── Auth ────────────────────────────────────────────────────────────────
+function renderAuthBtn() {
+  const el = document.getElementById('authBtn');
+  if (currentUser) {
+    el.innerHTML = `<button class="pub-badge" onclick="doLogout()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Editora &nbsp;·&nbsp; Salir
+    </button>`;
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+function openLogin() { openModal('loginModal'); }
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const msg = document.getElementById('loginMsg');
+  const btn = document.getElementById('loginBtn');
+  if (!email || !pass) { msg.textContent = 'Completa ambos campos.'; return; }
+  btn.textContent = 'Verificando…';
+  btn.disabled = true;
+  try {
+    await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+    closeModal('loginModal');
+    toast('¡Bienvenida de vuelta! 🌿', 'success');
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPass').value = '';
+    msg.textContent = '';
+  } catch(e) {
+    msg.textContent = 'Credenciales incorrectas. Inténtalo de nuevo.';
+  }
+  btn.textContent = 'Iniciar sesión';
+  btn.disabled = false;
+}
+
+async function doLogout() {
+  await fb.signOut(fb.auth);
+  toast('Sesión cerrada', 'info');
+}
+
+// ─── Load Posts ──────────────────────────────────────────────────────────
+async function loadPosts() {
+  try {
+    const col = fb.collection(fb.db, 'posts');
+    fb.onSnapshot(col, snap => {
+      allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderPosts();
+      updateStats();
+    });
+  } catch(e) {
+    console.error(e);
+    document.getElementById('postsGrid').innerHTML = `
+      <div class="empty-state">
+        <div class="icon">⚠️</div>
+        <h3>Error de conexión</h3>
+        <p>Verifica tu configuración de Firebase y vuelve a intentarlo.</p>
+      </div>`;
+  }
+}
+
+// ─── Render Posts ────────────────────────────────────────────────────────
+function renderPosts() {
+  const grid = document.getElementById('postsGrid');
+  let posts = [...allPosts];
+
+  // Filter by category
+  if (currentFilter !== 'all') posts = posts.filter(p => p.category === currentFilter);
+
+  // Show drafts only to publisher
+  if (!currentUser) posts = posts.filter(p => p.status !== 'draft');
+
+  // Sort
+  if (currentSort === 'newest') posts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  else if (currentSort === 'oldest') posts.sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
+  else if (currentSort === 'mostLiked') posts.sort((a,b) => (b.likes||0) - (a.likes||0));
+
+  if (!posts.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="icon">🌱</div>
+      <h3>Aún no hay publicaciones aquí</h3>
+      <p>Pronto habrá contenido fresco sobre moda consciente y ecología.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = posts.map((p, i) => buildCard(p, i === 0 && currentFilter === 'all' && currentSort === 'newest')).join('');
+}
+
+function buildCard(p, featured) {
+  const isDraft = p.status === 'draft';
+  const liked = likedPosts.includes(p.id);
+  const date = p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString('es-MX', {day:'numeric',month:'short',year:'numeric'}) : '—';
+  const readTime = Math.max(1, Math.ceil((p.body?.split(' ').length || 0) / 200));
+  const catEmoji = {mezclilla:'🧵',ecologia:'🌿',diy:'🛠',comunidad:'🤝',tendencias:'✨'}[p.category] || '📄';
+
+  return `
+  <article class="post-card${featured?' featured':''} fade-in" onclick="openPost('${p.id}')">
+    <div class="card-image">
+      ${p.imageUrl
+        ? `<img src="${p.imageUrl}" alt="${escHtml(p.title)}" loading="lazy">`
+        : `<div class="card-image-placeholder">${catEmoji}</div>`}
+      <div class="card-cat">${catEmoji} ${p.category || 'General'}</div>
+      ${isDraft ? '<div class="draft-ribbon">Borrador</div>' : ''}
+    </div>
+    <div class="card-body">
+      <div class="card-meta">
+        <span>📅 ${date}</span>
+        <span>⏱ ${readTime} min</span>
+        <span>♻️ ${p.likes||0}</span>
+        <span>💬 ${p.commentCount||0}</span>
+      </div>
+      <h2 class="card-title">${escHtml(p.title)}</h2>
+      <p class="card-excerpt">${escHtml(p.excerpt || '')}</p>
+      <div class="card-footer">
+        <div class="card-actions" onclick="event.stopPropagation()">
+          <button class="action-btn${liked?' liked':''}" onclick="toggleLike('${p.id}',event)">♻️ ${p.likes||0}</button>
+          <button class="action-btn comment-btn" onclick="openPost('${p.id}',true)">💬 ${p.commentCount||0}</button>
+        </div>
+        <span class="read-more">Leer</span>
+      </div>
+    </div>
+  </article>`;
+}
+
+// ─── Open Single Post ─────────────────────────────────────────────────────
+async function openPost(postId, scrollToComments = false) {
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('postView').style.display = 'block';
+  document.getElementById('postContent').innerHTML = '<div class="spinner"></div>';
+  window.scrollTo(0,0);
+  currentPostId = postId;
+
+  try {
+    // Increment views
+    const docRef = fb.doc(fb.db, 'posts', postId);
+    await fb.updateDoc(docRef, { views: fb.increment(1) });
+    const snap = await fb.getDoc(docRef);
+    const p = { id: snap.id, ...snap.data() };
+    renderSinglePost(p, scrollToComments);
+  } catch(e) {
+    document.getElementById('postContent').innerHTML = '<p>Error al cargar la publicación.</p>';
+  }
+}
+
+function renderSinglePost(p, scrollToComments) {
+  const liked = likedPosts.includes(p.id);
+  const date = p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'}) : '—';
+  const readTime = Math.max(1, Math.ceil((p.body?.split(' ').length || 0) / 200));
+  const tags = Array.isArray(p.tags) ? p.tags : [];
+  const bodyHtml = formatBody(p.body || '');
+
+  document.getElementById('postContent').innerHTML = `
+    ${p.imageUrl
+      ? `<img src="${p.imageUrl}" alt="${escHtml(p.title)}" class="post-hero-img">`
+      : `<div class="post-hero-placeholder">🌿</div>`}
+
+    ${tags.length ? `<div class="post-tags">${tags.map(t=>`<span class="post-tag">#${escHtml(t)}</span>`).join('')}</div>` : ''}
+
+    <h1 class="post-title">${escHtml(p.title)}</h1>
+
+    <div class="post-meta-row">
+      <span>📅 ${date}</span>
+      <span>⏱ ${readTime} min de lectura</span>
+      <span>👁 ${(p.views||0)+1} vistas</span>
+      <span>♻️ ${p.likes||0} reacciones</span>
+      <span>💬 ${p.commentCount||0} comentarios</span>
+      ${p.category ? `<span>🏷 ${p.category}</span>` : ''}
+      ${currentUser ? `
+        <button class="btn-edit" style="margin-left:auto;" onclick="editPost('${p.id}')">✏️ Editar</button>
+        <button class="btn-danger" onclick="deletePost('${p.id}')">🗑 Eliminar</button>
+      ` : ''}
+    </div>
+
+    <div class="post-body">${bodyHtml}</div>
+
+    <div class="post-actions-bar">
+      <button class="post-action-btn${liked?' active':''}" id="postLikeBtn" onclick="toggleLike('${p.id}')">
+        ♻️ &nbsp;<span id="postLikeCount">${p.likes||0}</span> Me gusta
+      </button>
+      <button class="post-action-btn share-btn" onclick="toggleSharePanel()">🔗 Compartir</button>
+      <button class="post-action-btn" onclick="window.print()">🖨 Imprimir</button>
+      <button class="post-action-btn" onclick="copyLink()">📋 Copiar enlace</button>
+    </div>
+    <div class="share-panel" id="sharePanel">
+      <p>¡Comparte este artículo con tu comunidad!</p>
+      <div class="share-btns">
+        <button class="share-btn-item" onclick="shareOn('whatsapp','${p.id}')">WhatsApp</button>
+        <button class="share-btn-item" onclick="shareOn('twitter','${p.id}')">X / Twitter</button>
+        <button class="share-btn-item" onclick="shareOn('facebook','${p.id}')">Facebook</button>
+        <button class="share-btn-item" onclick="shareOn('telegram','${p.id}')">Telegram</button>
+        <button class="share-btn-item" onclick="copyLink()">Copiar URL</button>
+      </div>
+    </div>
+
+    <div class="related-posts" id="relatedSection"></div>
+
+    <div class="comments-section" id="commentsSection">
+      <h3>Comentarios (<span id="commentCounter">${p.commentCount||0}</span>)</h3>
+      <div class="comment-form">
+        <input class="form-input" id="cName" placeholder="Tu nombre">
+        <textarea class="comment-form textarea" style="border:1.5px solid var(--border);background:var(--bg2);border-radius:10px;padding:12px 16px;font-family:var(--font-body);font-size:.9rem;color:var(--text);outline:none;resize:vertical;min-height:80px;width:100%;" id="cText" placeholder="Deja tu comentario…"></textarea>
+        <button class="btn-primary" style="align-self:flex-end;" onclick="submitComment('${p.id}')">Enviar comentario</button>
+      </div>
+      <div id="commentsList"></div>
+    </div>`;
+
+  loadComments(p.id);
+  loadRelated(p);
+
+  if (scrollToComments) {
+    setTimeout(() => document.getElementById('commentsSection')?.scrollIntoView({behavior:'smooth'}), 400);
+  }
+}
+
+function formatBody(text) {
+  return text.split('\n').map(line => {
+    // media token: :::media|URL|MIME|FILENAME:::
+    if (line.startsWith(':::media|')) {
+      try {
+        const parts = line.replace(':::media|','').replace(':::','').split('|');
+        const url = parts[0] || '';
+        const mime = parts[1] || '';
+        const name = parts[2] || '';
+        if (mime.startsWith('image/')) return `<div><img class="post-media" src="${escHtml(url)}" alt="${escHtml(name)}"></div>`;
+        if (mime.startsWith('video/')) return `<div><video class="post-media" controls src="${escHtml(url)}"></video></div>`;
+        if (mime.startsWith('audio/')) return `<div><audio class="post-media" controls src="${escHtml(url)}"></audio></div>`;
+        return `<div><a href="${escHtml(url)}" target="_blank" rel="noopener">Descargar: ${escHtml(name)}</a></div>`;
+      } catch(e) { return ''; }
+    }
+    if (line.startsWith('##')) return `<h2>${escHtml(line.slice(2).trim())}</h2>`;
+    if (line.startsWith('>')) return `<blockquote>${escHtml(line.slice(1).trim())}</blockquote>`;
+    if (line.trim() === '') return '';
+    return `<p>${escHtml(line)}</p>`;
+  }).join('');
+}
+
+// Handle inserting media from editor
+async function handleMediaSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!fb) { toast('Espera a que Firebase cargue.','error'); return; }
+  try {
+    const storageRef = fb.ref(fb.storage, `media/${Date.now()}_${file.name}`);
+    await fb.uploadBytes(storageRef, file);
+    const url = await fb.getDownloadURL(storageRef);
+    const token = `:::media|${url}|${file.type}|${file.name}:::`;
+    const ta = document.getElementById('edBody');
+    // insert token at cursor or at end
+    const start = ta.selectionStart || ta.value.length;
+    const end = ta.selectionEnd || ta.value.length;
+    ta.value = ta.value.slice(0,start) + '\n' + token + '\n' + ta.value.slice(end);
+    toast('Multimedia insertada en el contenido.','success');
+  } catch(e) {
+    console.error(e);
+    toast('Error al subir el archivo.','error');
+  }
+}
+
+// Open media modal when clicking media in post body
+document.addEventListener('click', function(e) {
+  const t = e.target;
+  if (t.closest('.post-body') && (t.tagName === 'IMG' || t.tagName === 'VIDEO' || t.tagName === 'AUDIO')) {
+    e.stopPropagation();
+    const src = t.getAttribute('src') || t.getAttribute('href');
+    const tag = t.tagName.toLowerCase();
+    openMediaModal(src, tag);
+  }
+});
+
+function openMediaModal(src, tag) {
+  const body = document.getElementById('mediaModalBody');
+  body.innerHTML = '';
+  if (!src) return;
+  if (tag === 'img' || src.match(/\.(jpg|jpeg|png|webp|gif)(\?|$)/i)) {
+    const img = document.createElement('img'); img.src = src; img.style.maxWidth = '100%'; img.style.maxHeight = '80vh'; img.style.borderRadius='10px';
+    body.appendChild(img);
+    document.getElementById('mediaModalTitle').textContent = 'Imagen';
+  } else if (tag === 'video' || src.match(/\.(mp4|webm|ogg)(\?|$)/i)) {
+    const v = document.createElement('video'); v.src = src; v.controls = true; v.style.maxWidth='100%'; v.style.maxHeight='80vh'; v.autoplay = false;
+    body.appendChild(v);
+    document.getElementById('mediaModalTitle').textContent = 'Video';
+  } else if (tag === 'audio' || src.match(/\.(mp3|wav|ogg)(\?|$)/i)) {
+    const a = document.createElement('audio'); a.src = src; a.controls = true; a.style.width='100%';
+    body.appendChild(a);
+    document.getElementById('mediaModalTitle').textContent = 'Audio';
+  } else {
+    const a = document.createElement('a'); a.href = src; a.target = '_blank'; a.rel='noopener'; a.textContent = 'Abrir archivo';
+    body.appendChild(a);
+    document.getElementById('mediaModalTitle').textContent = 'Archivo';
+  }
+  openModal('mediaModal');
+}
+
+// ─── Related Posts ────────────────────────────────────────────────────────
+function loadRelated(p) {
+  const related = allPosts.filter(r => r.id !== p.id && (r.category === p.category || (Array.isArray(r.tags) && Array.isArray(p.tags) && r.tags.some(t => p.tags.includes(t))))).slice(0, 3);
+  const sec = document.getElementById('relatedSection');
+  if (!sec || !related.length) return;
+  sec.innerHTML = `<h3>También te puede interesar</h3>
+    <div class="related-grid">${related.map(r => `
+      <div class="related-card" onclick="openPost('${r.id}')">
+        <h4>${escHtml(r.title)}</h4>
+        <p>${escHtml(r.excerpt||'').slice(0,80)}…</p>
+      </div>`).join('')}</div>`;
+}
+
+// ─── Comments ─────────────────────────────────────────────────────────────
+async function loadComments(postId) {
+  const list = document.getElementById('commentsList');
+  if (!list) return;
+  try {
+    const q = fb.query(fb.collection(fb.db, 'posts', postId, 'comments'), fb.orderBy('createdAt', 'asc'));
+    fb.onSnapshot(q, snap => {
+      const comments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      document.getElementById('commentCounter').textContent = comments.length;
+      if (!comments.length) { list.innerHTML = '<p style="color:var(--text3);font-size:.875rem;padding:8px 0;">Sé la primera en comentar.</p>'; return; }
+      list.innerHTML = comments.map(c => buildComment(c, postId)).join('');
+    });
+  } catch(e) { console.error(e); }
+}
+
+function buildComment(c, postId) {
+  const liked = likedComments.includes(c.id);
+  const date = c.createdAt ? new Date(c.createdAt.seconds * 1000).toLocaleDateString('es-MX',{day:'numeric',month:'short'}) : '—';
+  const initials = (c.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  return `<div class="comment">
+    <div class="comment-avatar">${initials}</div>
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="comment-author">${escHtml(c.name||'Anónimo')}</span>
+        <span class="comment-date">${date}</span>
+        ${currentUser ? `<button class="btn-danger" style="padding:2px 8px;font-size:.7rem;margin-left:auto;" onclick="deleteComment('${postId}','${c.id}')">🗑</button>` : ''}
+      </div>
+      <p class="comment-text">${escHtml(c.text||'')}</p>
+      <button class="comment-like${liked?' active':''}" onclick="likeComment('${c.id}',event)">
+        ♥ ${c.likes||0}
+      </button>
+    </div>
+  </div>`;
+}
+
+async function submitComment(postId) {
+  const name = document.getElementById('cName').value.trim();
+  const text = document.getElementById('cText').value.trim();
+  if (!name || !text) { toast('Completa tu nombre y comentario.','error'); return; }
+  try {
+    await fb.addDoc(fb.collection(fb.db, 'posts', postId, 'comments'), {
+      name, text, likes: 0, createdAt: fb.serverTimestamp()
+    });
+    await fb.updateDoc(fb.doc(fb.db, 'posts', postId), { commentCount: fb.increment(1) });
+    document.getElementById('cText').value = '';
+    toast('¡Comentario publicado! 🌿', 'success');
+  } catch(e) { toast('Error al publicar el comentario.','error'); }
+}
+
+async function deleteComment(postId, commentId) {
+  if (!confirm('¿Eliminar este comentario?')) return;
+  await fb.deleteDoc(fb.doc(fb.db, 'posts', postId, 'comments', commentId));
+  await fb.updateDoc(fb.doc(fb.db, 'posts', postId), { commentCount: fb.increment(-1) });
+  toast('Comentario eliminado.', 'info');
+}
+
+async function likeComment(commentId, event) {
+  event.stopPropagation();
+  // optimistic only (no post ref here for simplicity)
+  if (likedComments.includes(commentId)) return;
+  likedComments.push(commentId);
+  localStorage.setItem('tn_clikes', JSON.stringify(likedComments));
+  const btn = event.currentTarget;
+  btn.classList.add('active');
+  btn.style.color = 'var(--accent)';
+}
+
+// ─── Likes ────────────────────────────────────────────────────────────────
+async function toggleLike(postId, event) {
+  if (event) event.stopPropagation();
+  const idx = likedPosts.indexOf(postId);
+  const delta = idx >= 0 ? -1 : 1;
+  if (idx >= 0) likedPosts.splice(idx,1);
+  else likedPosts.push(postId);
+  localStorage.setItem('tn_likes', JSON.stringify(likedPosts));
+
+  try {
+    await fb.updateDoc(fb.doc(fb.db,'posts',postId), { likes: fb.increment(delta) });
+    // Update post-view btn if open
+    const btn = document.getElementById('postLikeBtn');
+    if (btn) {
+      btn.classList.toggle('active', likedPosts.includes(postId));
+      const cnt = btn.querySelector('#postLikeCount');
+      if (cnt) cnt.textContent = parseInt(cnt.textContent) + delta;
+    }
+    toast(delta > 0 ? '¡Gracias por tu reacción ♻️!' : 'Reacción retirada.', 'success');
+  } catch(e) { console.error(e); }
+}
+
+// ─── Home view ────────────────────────────────────────────────────────────
+function showHome() {
+  document.getElementById('homeView').style.display = '';
+  document.getElementById('postView').style.display = 'none';
+  currentPostId = null;
+  document.getElementById('readingProgress').style.width = '0%';
+}
+
+function filterBy(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const names = {all:'Publicaciones recientes',mezclilla:'Bolsas de mezclilla 🧵',ecologia:'Ecología 🌿',diy:'Tutoriales DIY 🛠',comunidad:'Comunidad 🤝',tendencias:'Tendencias ✨'};
+  document.getElementById('sectionTitle').textContent = names[cat] || 'Artículos';
+  renderPosts();
+}
+
+function sortPosts() {
+  currentSort = document.getElementById('sortSelect').value;
+  renderPosts();
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────
+function updateStats() {
+  const published = allPosts.filter(p => p.status !== 'draft');
+  const totalLikes = allPosts.reduce((s,p) => s + (p.likes||0), 0);
+  const totalComments = allPosts.reduce((s,p) => s + (p.commentCount||0), 0);
+  document.getElementById('statPosts').textContent = published.length;
+  document.getElementById('statLikes').textContent = totalLikes;
+  document.getElementById('statComments').textContent = totalComments;
+}
+
+// ─── Publisher dashboard ──────────────────────────────────────────────────
+function renderPublisherDash() {
+  const el = document.getElementById('publisherDash');
+  if (!currentUser) { el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+
+  const total = allPosts.length;
+  const published = allPosts.filter(p=>p.status!=='draft').length;
+  const drafts = allPosts.filter(p=>p.status==='draft').length;
+  const totalViews = allPosts.reduce((s,p)=>s+(p.views||0),0);
+  const totalLikes = allPosts.reduce((s,p)=>s+(p.likes||0),0);
+
+  el.innerHTML = `
+  <div class="dashboard-banner">
+    <div>
+      <h3>Panel de edición ✏️</h3>
+      <p>Bienvenida, editora. Gestiona el contenido de Terra Nova.</p>
+    </div>
+    <div class="dash-actions">
+      <button class="btn-primary" onclick="openEditor()">+ Nueva publicación</button>
+      <button class="btn-secondary" onclick="toggleAdminList()">📋 Gestionar posts</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><strong>${total}</strong><span>Total posts</span></div>
+    <div class="stat-card"><strong>${published}</strong><span>Publicados</span></div>
+    <div class="stat-card"><strong>${drafts}</strong><span>Borradores</span></div>
+    <div class="stat-card"><strong>${totalViews}</strong><span>Vistas totales</span></div>
+    <div class="stat-card"><strong>${totalLikes}</strong><span>Reacciones ♻️</span></div>
+  </div>
+  <div id="adminList" class="hidden">
+    <div class="admin-posts-table">
+      ${allPosts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(p => `
+      <div class="admin-post-row">
+        <div class="admin-post-info">
+          <h4>${escHtml(p.title)}</h4>
+          <p>${p.category||'—'} · ♻️${p.likes||0} · 👁${p.views||0} · 💬${p.commentCount||0}</p>
+        </div>
+        <span class="status-pill ${p.status==='draft'?'draft':'published'}">${p.status==='draft'?'Borrador':'Publicado'}</span>
+        <div class="admin-post-actions">
+          <button class="btn-edit" onclick="editPost('${p.id}')">✏️</button>
+          ${p.status==='draft'?`<button class="btn-publish" onclick="publishNow('${p.id}')">Publicar</button>`:''}
+          <button class="btn-danger" onclick="deletePost('${p.id}')">🗑</button>
+        </div>
+      </div>`).join('') || '<p style="padding:20px;color:var(--text3);">Sin publicaciones aún.</p>'}
+    </div>
+  </div>`;
+}
+
+function toggleAdminList() {
+  document.getElementById('adminList')?.classList.toggle('hidden');
+}
+
+async function publishNow(postId) {
+  await fb.updateDoc(fb.doc(fb.db,'posts',postId),{status:'published'});
+  toast('¡Post publicado! 🌿','success');
+}
+
+// ─── Editor ───────────────────────────────────────────────────────────────
+function openEditor(post) {
+  editingPostId = post?.id || null;
+  currentTags = post?.tags ? [...post.tags] : [];
+  selectedImageFile = null;
+
+  document.getElementById('editorTitle').textContent = post ? 'Editar publicación' : 'Nueva publicación';
+  document.getElementById('saveBtnText').textContent = post ? 'Guardar cambios' : 'Publicar';
+  document.getElementById('edTitle').value = post?.title || '';
+  document.getElementById('edExcerpt').value = post?.excerpt || '';
+  document.getElementById('edBody').value = post?.body || '';
+  document.getElementById('edCat').value = post?.category || '';
+  document.getElementById('edStatus').value = post?.status || 'published';
+  document.getElementById('imgPreview').src = '';
+  document.getElementById('imgPreview').classList.add('hidden');
+  document.getElementById('imgFileName').textContent = post?.imageUrl ? '✔ Imagen existente cargada' : '';
+  renderTagChips();
+  openModal('editorModal');
+}
+
+function editPost(postId) {
+  const post = allPosts.find(p => p.id === postId);
+  if (post) openEditor(post);
+}
+
+async function savePost() {
+  if (!currentUser) return;
+  const title = document.getElementById('edTitle').value.trim();
+  const excerpt = document.getElementById('edExcerpt').value.trim();
+  const body = document.getElementById('edBody').value.trim();
+  const category = document.getElementById('edCat').value;
+  const status = document.getElementById('edStatus').value;
+
+  if (!title || !excerpt || !body || !category) { toast('Completa todos los campos obligatorios.','error'); return; }
+
+  const btn = document.getElementById('savePostBtn');
+  btn.disabled = true;
+  document.getElementById('saveBtnText').textContent = 'Guardando…';
+
+  try {
+    let imageUrl = editingPostId ? (allPosts.find(p=>p.id===editingPostId)?.imageUrl || '') : '';
+    let imageRef = editingPostId ? (allPosts.find(p=>p.id===editingPostId)?.imageRef || '') : '';
+
+    // Upload image if selected
+    if (selectedImageFile) {
+      const storageRef = fb.ref(fb.storage, `posts/${Date.now()}_${selectedImageFile.name}`);
+      await fb.uploadBytes(storageRef, selectedImageFile);
+      imageUrl = await fb.getDownloadURL(storageRef);
+      imageRef = storageRef.fullPath;
+    }
+
+    const data = { title, excerpt, body, category, status, tags: currentTags, imageUrl, imageRef, updatedAt: fb.serverTimestamp() };
+
+    if (editingPostId) {
+      await fb.updateDoc(fb.doc(fb.db,'posts',editingPostId), data);
+      toast('¡Publicación actualizada! ✨', 'success');
+    } else {
+      await fb.addDoc(fb.collection(fb.db,'posts'), { ...data, likes: 0, views: 0, commentCount: 0, createdAt: fb.serverTimestamp() });
+      toast('¡Publicación creada! 🌿', 'success');
+    }
+
+    closeModal('editorModal');
+  } catch(e) {
+    console.error(e);
+    toast('Error al guardar. Revisa la consola.', 'error');
+  }
+  btn.disabled = false;
+  document.getElementById('saveBtnText').textContent = editingPostId ? 'Guardar cambios' : 'Publicar';
+}
+
+async function deletePost(postId) {
+  if (!confirm('¿Eliminar esta publicación permanentemente?')) return;
+  const post = allPosts.find(p=>p.id===postId);
+  if (post?.imageRef) {
+    try { await fb.deleteObject(fb.ref(fb.storage, post.imageRef)); } catch(e) {}
+  }
+  await fb.deleteDoc(fb.doc(fb.db,'posts',postId));
+  toast('Publicación eliminada.', 'info');
+  if (currentPostId === postId) showHome();
+}
+
+function previewPost() {
+  const title = document.getElementById('edTitle').value || 'Sin título';
+  const body = document.getElementById('edBody').value || '';
+  const win = window.open('','_blank','width=800,height=600');
+  win.document.write(`<html><head><title>Previsualización</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:0 20px;line-height:1.7}h1{font-size:2rem}h2{font-size:1.4rem;margin:1.5em 0 .5em}blockquote{border-left:3px solid #3d6b4f;padding:8px 0 8px 16px;color:#666;font-style:italic}</style></head><body><h1>${escHtml(title)}</h1>${formatBody(body)}</body></html>`);
+}
+
+// ─── Tags ─────────────────────────────────────────────────────────────────
+function handleTagInput(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = document.getElementById('tagInput').value.trim().replace(/,$/, '');
+    if (val && !currentTags.includes(val)) {
+      currentTags.push(val);
+      renderTagChips();
+    }
+    document.getElementById('tagInput').value = '';
+  }
+}
+function renderTagChips() {
+  const wrap = document.getElementById('tagsWrap');
+  const input = document.getElementById('tagInput');
+  wrap.innerHTML = '';
+  currentTags.forEach((t,i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${escHtml(t)} <button onclick="removeTag(${i})">×</button>`;
+    wrap.appendChild(chip);
+  });
+  wrap.appendChild(input);
+}
+function removeTag(i) {
+  currentTags.splice(i,1);
+  renderTagChips();
+}
+
+// ─── Image upload ─────────────────────────────────────────────────────────
+function handleImageSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  processImage(file);
+}
+function processImage(file) {
+  if (file.size > 5 * 1024 * 1024) { toast('La imagen supera los 5 MB.', 'error'); return; }
+  selectedImageFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('imgPreview');
+    preview.src = e.target.result;
+    preview.classList.remove('hidden');
+    document.getElementById('imgFileName').textContent = `✔ ${file.name}`;
+  };
+  reader.readAsDataURL(file);
+}
+function onDragOver(e) { e.preventDefault(); document.getElementById('dropZone').classList.add('dragover'); }
+function onDragLeave() { document.getElementById('dropZone').classList.remove('dragover'); }
+function onDrop(e) {
+  e.preventDefault();
+  onDragLeave();
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) processImage(file);
+}
+
+// ─── Search ───────────────────────────────────────────────────────────────
+function toggleSearch() {
+  const o = document.getElementById('searchOverlay');
+  o.classList.toggle('open');
+  if (o.classList.contains('open')) setTimeout(() => document.getElementById('searchInput').focus(), 100);
+}
+function closeSearchIfOutside(e) {
+  if (e.target === document.getElementById('searchOverlay')) toggleSearch();
+}
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const res = document.getElementById('searchResults');
+  if (!q) { res.innerHTML = ''; return; }
+  const matches = allPosts.filter(p =>
+    (p.status !== 'draft' || currentUser) &&
+    (p.title?.toLowerCase().includes(q) || p.excerpt?.toLowerCase().includes(q) || p.body?.toLowerCase().includes(q) || (p.tags||[]).some(t=>t.toLowerCase().includes(q)))
+  ).slice(0,6);
+  if (!matches.length) { res.innerHTML = '<p style="text-align:center;padding:12px;color:var(--text3);font-size:.85rem;">Sin resultados para "'+q+'"</p>'; return; }
+  res.innerHTML = matches.map(p => `
+    <div class="search-result-item" onclick="toggleSearch();openPost('${p.id}')">
+      <h4>${escHtml(p.title)}</h4>
+      <p>${escHtml(p.excerpt||'').slice(0,80)}…</p>
+    </div>`).join('');
+}
+
+// ─── Share ────────────────────────────────────────────────────────────────
+function toggleSharePanel() {
+  document.getElementById('sharePanel')?.classList.toggle('open');
+}
+function shareOn(platform, postId) {
+  const url = encodeURIComponent(location.href + '#post/' + postId);
+  const title = encodeURIComponent('Lee este artículo en Terra Nova');
+  const urls = {
+    whatsapp: `https://wa.me/?text=${title}%20${url}`,
+    twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    telegram: `https://t.me/share/url?url=${url}&text=${title}`
+  };
+  window.open(urls[platform], '_blank');
+}
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => toast('Enlace copiado al portapapeles 📋', 'success'));
+}
+
+// ─── Newsletter ───────────────────────────────────────────────────────────
+async function subscribeNewsletter() {
+  const email = document.getElementById('nlEmail').value.trim();
+  if (!email || !email.includes('@')) { toast('Ingresa un correo válido.', 'error'); return; }
+  try {
+    await fb.addDoc(fb.collection(fb.db, 'subscribers'), { email, createdAt: fb.serverTimestamp() });
+    document.getElementById('nlEmail').value = '';
+    toast('¡Suscripción confirmada! 🌿', 'success');
+  } catch(e) { toast('Error al suscribirse.', 'error'); }
+}
+
+// ─── Theme ────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  document.getElementById('themeBtn').textContent = isDark ? '🌿' : '🌙';
+  localStorage.setItem('tn_theme', html.dataset.theme);
+}
+// Apply saved theme
+(function() {
+  const saved = localStorage.getItem('tn_theme');
+  if (saved) {
+    document.documentElement.dataset.theme = saved;
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('themeBtn').textContent = saved === 'dark' ? '🌙' : '🌿';
+    });
+  }
+})();
+
+// ─── Mobile nav ───────────────────────────────────────────────────────────
+function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('open'); }
+function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); }
+
+// ─── Modal helpers ────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─── Reading progress ─────────────────────────────────────────────────────
+function updateReadingProgress() {
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop || document.body.scrollTop;
+  const total = doc.scrollHeight - doc.clientHeight;
+  const pct = total > 0 ? (scrolled / total) * 100 : 0;
+  document.getElementById('readingProgress').style.width = pct + '%';
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────
+function toast(msg, type='info') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = {success:'✔',error:'✕',info:'ℹ'};
+  t.innerHTML = `<span>${icons[type]||'ℹ'}</span> ${msg}`;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+// ─── Util ─────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Keyboard shortcuts ───────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal('loginModal');
+    closeModal('editorModal');
+    if (document.getElementById('searchOverlay').classList.contains('open')) toggleSearch();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleSearch(); }
+});
+
+// ─── Periodically refresh dashboard when publisher is logged in ───────────
+setInterval(() => { if (currentUser) renderPublisherDash(); }, 30000);
+</script>
+</body>
+</html>
