@@ -456,6 +456,20 @@ a{color:inherit;text-decoration:none}
 .post-view{display:none;flex-direction:column;gap:0}
 .post-view.open{display:flex}
 
+.info-view{display:none;flex-direction:column;gap:20px}
+.info-panel{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius2);padding:28px;box-shadow:0 24px 64px rgba(0,0,0,.08);}
+.info-header{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.info-header h1{font-family:var(--font-display);font-size:clamp(2rem,4vw,2.8rem);margin:0;}
+.info-header p{max-width:760px;color:var(--text2);line-height:1.8;}
+.info-links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
+.info-links .filter-pill{padding:10px 18px;font-size:.82rem;border-radius:999px;}
+.info-content{display:grid;grid-template-columns:1fr;gap:20px;}
+.info-content-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:18px;margin-top:20px;}
+.info-card{background:var(--bg2);border-radius:18px;padding:20px;border:1px solid var(--border);}
+.info-card h3{font-family:var(--font-display);font-size:1.05rem;margin-bottom:12px;}
+.info-card p{font-size:.95rem;color:var(--text3);line-height:1.75;}
+@media(max-width:820px){.info-content-grid{grid-template-columns:1fr}} 
+
 .post-hero-img{
   width:100%;height:420px;object-fit:cover;
   border-radius:var(--radius2);margin-bottom:32px;
@@ -1091,6 +1105,26 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
+  <!-- ── INFO SECTIONS ── -->
+  <div id="infoView" class="info-view" style="display:none;">
+    <div class="container" style="max-width:860px;">
+      <button class="back-btn" onclick="showHome()">← Volver</button>
+      <div class="info-panel">
+        <div class="info-header">
+          <h1 id="infoTitle">Sobre nosotros</h1>
+          <p id="infoIntro">Descubre quiénes somos, por qué creemos en la moda circular y cómo puedes ser parte del cambio.</p>
+        </div>
+        <div class="info-links">
+          <button class="filter-pill active" data-section="sobre" onclick="showInfo('sobre')">Sobre nosotros</button>
+          <button class="filter-pill" data-section="impacto" onclick="showInfo('impacto')">Impacto ambiental</button>
+          <button class="filter-pill" data-section="colabora" onclick="showInfo('colabora')">Colabora</button>
+          <button class="filter-pill" data-section="contacto" onclick="showInfo('contacto')">Contacto</button>
+        </div>
+        <div id="infoContent" class="info-content"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── SINGLE POST VIEW ── -->
   <div id="postView" style="display:none;">
     <div class="container" style="max-width:860px;">
@@ -1122,10 +1156,10 @@ a{color:inherit;text-decoration:none}
       <div class="footer-col">
         <h4>Proyecto</h4>
         <ul>
-          <li><a href="#">Sobre nosotros</a></li>
-          <li><a href="#">Impacto ambiental</a></li>
-          <li><a href="#">Colabora</a></li>
-          <li><a href="#">Contacto</a></li>
+          <li><a href="#" onclick="showInfo('sobre'); return false;">Sobre nosotros</a></li>
+          <li><a href="#" onclick="showInfo('impacto'); return false;">Impacto ambiental</a></li>
+          <li><a href="#" onclick="showInfo('colabora'); return false;">Colabora</a></li>
+          <li><a href="#" onclick="showInfo('contacto'); return false;">Contacto</a></li>
         </ul>
       </div>
     </div>
@@ -1472,6 +1506,7 @@ function buildCard(p, featured) {
 async function openPost(postId, scrollToComments = false) {
   document.getElementById('homeView').style.display = 'none';
   document.getElementById('postView').style.display = 'block';
+  document.getElementById('infoView').style.display = 'none';
   document.getElementById('postContent').innerHTML = '<div class="spinner"></div>';
   window.scrollTo(0,0);
   currentPostId = postId;
@@ -1869,11 +1904,70 @@ async function toggleLike(postId, event) {
 function showHome() {
   document.getElementById('homeView').style.display = '';
   document.getElementById('postView').style.display = 'none';
+  document.getElementById('infoView').style.display = 'none';
   currentPostId = null;
   document.getElementById('readingProgress').style.width = '0%';
 }
 
+function showInfo(section) {
+  document.getElementById('homeView').style.display = 'none';
+  document.getElementById('postView').style.display = 'none';
+  document.getElementById('infoView').style.display = 'block';
+  renderInfoSection(section);
+  window.scrollTo(0,0);
+}
+
+function renderInfoSection(section) {
+  const sections = {
+    sobre: {
+      title: 'Sobre nosotros',
+      intro: 'Somos un blog con alma local y mirada global. Nos mueve la moda responsable, la reutilización de mezclilla y el diseño que cuida al planeta.',
+      html: `<div class="info-content-grid">
+          <div class="info-card"><h3>Nuestra misión</h3><p>Crear un espacio donde el diseño, la sostenibilidad y la comunidad se encuentren en cada pieza y cada historia.</p></div>
+          <div class="info-card"><h3>¿Qué hacemos?</h3><p>Compartimos artículos, tutoriales y recursos para que la moda sea una herramienta de cambio real.</p></div>
+        </div>
+        <div class="info-card"><h3>Valores</h3><p>Honestidad, respeto por el planeta y creatividad con propósito.</p></div>
+        <div class="info-card"><h3>Creadores</h3><p>Programador e idea principal: Santiago Cerdeira Chavez. <br>Persona que no hizo nada: Cesar Martínez Monroy.</p></div>`,
+    },
+    impacto: {
+      title: 'Impacto ambiental',
+      intro: 'Descubre cómo la moda consciente puede reducir el consumo de agua, la generación de residuos y el impacto térmico de los textiles.',
+      html: `<div class="info-content-grid">
+          <div class="info-card"><h3>Moda circular</h3><p>Reutilizar y reparar prendas reduce la demanda de nuevo material y prolonga el valor de cada prenda.</p></div>
+          <div class="info-card"><h3>Consejos prácticos</h3><p>Prefiere ropa duradera, evita el lavado excesivo y apuesta por materiales reciclados.</p></div>
+        </div>
+        <div class="info-card"><h3>¿Por qué importa?</h3><p>El sector textil es uno de los más contaminantes. Cambiar hábitos es un pequeño gesto con gran efecto colectivo.</p></div>`,
+    },
+    colabora: {
+      title: 'Colabora con nosotros',
+      intro: 'Si tienes un proyecto, un taller o una historia sobre moda sostenible, queremos escucharte y crear juntos.',
+      html: `<div class="info-content-grid">
+          <div class="info-card"><h3>Proyectos</h3><p>Escríbenos para explorar colaboraciones, talleres y contenidos con propósito.</p></div>
+          <div class="info-card"><h3>Voluntariado</h3><p>Buscamos personas con ganas de apoyar campañas, eventos y difusión de buenas prácticas.</p></div>
+        </div>
+        <div class="info-card"><h3>Lo que aportas</h3><p>Ideas creativas, contenido educativo y energía positiva para transformar la moda desde dentro.</p></div>`,
+    },
+    contacto: {
+      title: 'Contacto',
+      intro: '¿Tienes dudas, sugerencias o propuestas creativas? Aquí te dejamos las formas más directas de comunicarnos.',
+      html: `<div class="info-content-grid">
+          <div class="info-card"><h3>Email</h3><p>hola@terranova.com (no real)</p></div>
+          <div class="info-card"><h3>Plazos</h3><p>Respondemos en menos de 48 horas durante días hábiles.</p></div>
+        </div>
+        <div class="info-card"><h3>Síguenos</h3><p>Pronto añadiremos redes y canales directos para que puedas estar siempre conectado.</p></div>`,
+    }
+  };
+  const selected = sections[section] || sections.sobre;
+  document.getElementById('infoTitle').textContent = selected.title;
+  document.getElementById('infoIntro').textContent = selected.intro;
+  document.getElementById('infoContent').innerHTML = selected.html;
+  document.querySelectorAll('#infoView .filter-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === section);
+  });
+}
+
 function filterBy(cat, btn) {
+  showHome();
   currentFilter = cat;
   document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
   if (btn) btn.classList.add('active');
