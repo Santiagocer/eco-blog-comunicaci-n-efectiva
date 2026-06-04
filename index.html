@@ -1596,10 +1596,7 @@ function applyEditorFormat(type) {
     case 'ol': prefixLine('1. '); break;
     case 'code': wrap('`', '`'); break;
     case 'link': {
-      const url = prompt('URL del enlace:', 'https://');
-      if (!url) return;
-      ta.setRangeText(`[${selected}](${url})`, start, end, 'end');
-      ta.focus();
+      showLinkPrompt(selected, start, end, ta);
       break;
     }
     case 'highlight': wrap('==', '=='); break;
@@ -1611,6 +1608,56 @@ function applyEditorFormat(type) {
     }
     default: break;
   }
+}
+
+function showLinkPrompt(selectedText, start, end, ta) {
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 9999; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 24px; min-width: 300px; box-shadow: 0 16px 40px var(--shadow2);
+  `;
+  modal.innerHTML = `
+    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: var(--text);">URL del enlace:</label>
+    <input type="text" placeholder="https://" value="https://" style="
+      width: 100%; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font-body); margin-bottom: 16px; box-sizing: border-box;
+    ">
+    <div style="display: flex; gap: 10px;">
+      <button style="flex: 1; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Insertar</button>
+      <button style="flex: 1; padding: 10px; background: var(--border); color: var(--text); border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Cancelar</button>
+    </div>
+  `;
+  const input = modal.querySelector('input');
+  const [btnInsert, btnCancel] = modal.querySelectorAll('button');
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,0.3);`;
+  
+  const insertLink = () => {
+    const url = input.value.trim();
+    if (url) {
+      ta.setRangeText(`[${selectedText}](${url})`, start, end, 'end');
+      ta.focus();
+    }
+    document.body.removeChild(overlay);
+    document.body.removeChild(modal);
+  };
+  
+  btnInsert.onclick = insertLink;
+  btnCancel.onclick = () => {
+    document.body.removeChild(overlay);
+    document.body.removeChild(modal);
+  };
+  
+  overlay.onclick = () => {
+    document.body.removeChild(overlay);
+    document.body.removeChild(modal);
+  };
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(modal);
+  input.focus();
+  input.select();
 }
 
 // Handle inserting media from editor
